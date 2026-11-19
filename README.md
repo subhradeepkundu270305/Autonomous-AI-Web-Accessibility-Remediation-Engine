@@ -262,12 +262,6 @@ startCommand: "cd backend && npm start"
 
 ---
 
-## Team
-
-Built by a team of 4 B.Tech CS students as a final-year project — demonstrating hybrid AI + rule-based accessibility remediation.
-
----
-
 ## License
 
 MIT
