@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<!--
+  DELIBERATE WCAG VIOLATIONS — for testing axe-core and the full pipeline.
+  DO NOT use this page in production.
+
+  Violations included:
+  1.  Missing alt text on images                    → WCAG 1.1.1 (A)
+  2.  Button with no accessible name                → WCAG 4.1.2 (A)
+  3.  Input with no associated label                → WCAG 1.3.1 (A)
+  4.  Low contrast text (gray on white)             → WCAG 1.4.3 (AA)
+  5.  Skipped heading levels (h1 → h4)              → WCAG 1.3.1 (A)
+  6.  Link with non-descriptive text "click here"   → WCAG 2.4.4 (A)
+  7.  Form without fieldset/legend grouping         → WCAG 1.3.1 (A)
+  8.  iframe without a title attribute              → WCAG 4.1.2 (A)
+  9.  Missing lang attribute on <html>              → WCAG 3.1.1 (A)
+  10. Image used as button with no alt/aria-label   → WCAG 1.1.1 (A)
+  11. Auto-playing video with no controls           → WCAG 1.4.2 (A)
+  12. Table without header scope attributes         → WCAG 1.3.1 (A)
+-->
+<html>
+<!-- Violation 9: Missing lang attribute -->
+<head>
+  <meta charset="UTF-8" />
+  <title>Bad Accessibility Test Page</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; }
+
+    /* Violation 4: very low contrast (#bbb on #fff) */
+    .low-contrast { color: #bbb; }
+
+    .section { margin-bottom: 2rem; padding: 1rem; border: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+
+  <!-- Violation 5: jumps from h1 directly to h4 (skips h2, h3) -->
+  <h1>Accessible Website Demo</h1>
+
+  <!-- ── Section 1: Images ───────────────────────────────────────────────── -->
+  <div class="section" id="images-section">
+    <h4>Image Examples</h4>
+
+    <!-- Violation 1a: img with no alt attribute at all -->
+    <img id="hero-image" src="https://placehold.co/600x200" width="600" height="200" />
+
+    <!-- Violation 1b: decorative-looking image with meaningful content but empty alt -->
+    <img id="chart-image" src="https://placehold.co/300x200" alt="" />
+
+    <!-- Violation 10: image acting as a button with no accessible name -->
+    <img id="icon-button" src="https://placehold.co/40x40" onclick="submitForm()" style="cursor:pointer;" />
+  </div>
+
+  <!-- ── Section 2: Buttons & Links ─────────────────────────────────────── -->
+  <div class="section" id="buttons-section">
+    <h2>Buttons and Links</h2>
+
+    <!-- Violation 2: button with no text content or aria-label -->
+    <button id="empty-button" onclick="alert('clicked')">
+      <!-- icon only, no text -->
+      &#x2605;
+    </button>
+    <!-- NOTE: the star &#x2605; has no semantic meaning; axe flags this -->
+
+    <!-- Actually let's have a truly empty button -->
+    <button id="truly-empty-btn"></button>
+
+    <!-- Violation 6: non-descriptive link text -->
+    <p>To read more about our services, <a id="bad-link" href="/services">click here</a>.</p>
+
+    <!-- Violation 6b: another ambiguous link -->
+    <a id="read-more-link" href="/blog">Read more</a>
+  </div>
+
+  <!-- ── Section 3: Forms ────────────────────────────────────────────────── -->
+  <div class="section" id="forms-section">
+    <h2>Contact Form</h2>
+
+    <!-- Violation 3a: input with no associated label (no for/id match, no aria-label) -->
+    <input id="unlabeled-name" type="text" placeholder="Your name" />
+
+    <!-- Violation 3b: another unlabeled input -->
+    <input id="unlabeled-email" type="email" placeholder="Email address" />
+
+    <!-- Violation 7: radio group with no fieldset/legend -->
+    <div id="radio-group">
+      <input type="radio" name="contact_pref" id="r1" value="email" />
+      <label for="r1">Email</label>
+      <input type="radio" name="contact_pref" id="r2" value="phone" />
+      <label for="r2">Phone</label>
+    </div>
+
+    <!-- Violation 2b: submit button relying solely on value for accessible name (some scanners flag) -->
+    <button id="submit-btn" type="submit">Submit</button>
+  </div>
+
+  <!-- ── Section 4: Low contrast ────────────────────────────────────────── -->
+  <div class="section" id="contrast-section">
+    <h2>Readability</h2>
+    <!-- Violation 4: #bbb on white background ≈ 2.85:1 contrast ratio (needs 4.5:1) -->
+    <p id="low-contrast-text" class="low-contrast">
+      This paragraph has very low contrast and is hard to read for users with low vision.
+    </p>
+  </div>
+
+  <!-- ── Section 5: Iframe ───────────────────────────────────────────────── -->
+  <div class="section" id="iframe-section">
+    <h2>Embedded Content</h2>
+    <!-- Violation 8: iframe without title attribute -->
+    <iframe id="no-title-iframe" src="about:blank" width="400" height="200"></iframe>
+  </div>
+
+  <!-- ── Section 6: Table ────────────────────────────────────────────────── -->
+  <div class="section" id="table-section">
+    <h2>Data Table</h2>
+    <!-- Violation 12: table with no <th scope> attributes -->
+    <table id="no-header-table" border="1">
+      <tr>
+        <td>Name</td>
+        <td>Score</td>
+        <td>Status</td>
+      </tr>
+      <tr>
+        <td>Alice</td>
+        <td>92</td>
+        <td>Pass</td>
+      </tr>
+      <tr>
+        <td>Bob</td>
+        <td>45</td>
+        <td>Fail</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ── Section 7: Video ────────────────────────────────────────────────── -->
+  <div class="section" id="video-section">
+    <h2>Media</h2>
+    <!-- Violation 11: autoplay video without controls -->
+    <video id="autoplay-video" autoplay width="400">
+      <source src="placeholder.mp4" type="video/mp4" />
+    </video>
+  </div>
+
+</body>
+</html>

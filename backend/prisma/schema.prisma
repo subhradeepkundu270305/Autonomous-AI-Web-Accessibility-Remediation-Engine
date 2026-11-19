@@ -1,0 +1,96 @@
+// Prisma schema — source of truth for the database.
+// ORM: Prisma v5
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// ─── Users ─────────────────────────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String   // bcrypt hash
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  projects Project[]
+
+  @@map("users")
+}
+
+// ─── Projects ───────────────────────────────────────────────────────────────
+
+model Project {
+  id        String   @id @default(uuid())
+  userId    String?  @map("user_id")   // nullable — unauthenticated scans allowed
+  name      String   @default("Untitled Project")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user  User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+  scans Scan[]
+
+  @@map("projects")
+}
+
+// ─── Scans ─────────────────────────────────────────────────────────────────
+
+model Scan {
+  id            String     @id @default(uuid())
+  projectId     String?    @map("project_id")   // nullable for unauth scans
+  targetUrl     String     @map("target_url")
+  status        String     @default("QUEUED")   // QUEUED | RUNNING | COMPLETED | FAILED
+  score         Int?
+  screenshotUrl String?    @map("screenshot_url")
+  errorMessage  String?    @map("error_message")
+  startedAt     DateTime?  @map("started_at")
+  completedAt   DateTime?  @map("completed_at")
+  createdAt     DateTime   @default(now()) @map("created_at")
+
+  project Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  issues  Issue[]
+
+  @@map("scans")
+}
+
+// ─── Issues ─────────────────────────────────────────────────────────────────
+
+model Issue {
+  id           String   @id @default(uuid())
+  scanId       String   @map("scan_id")
+  ruleId       String   @map("rule_id")
+  wcagCriteria String?  @map("wcag_criteria")
+  severity     String   // critical | serious | moderate | minor
+  selector     String
+  description  String
+  elementHtml  String?  @map("element_html")
+  source       String   @default("axe")   // axe | gemini
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  scan Scan  @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  fix  Fix?
+
+  @@map("issues")
+}
+
+// ─── Fixes ──────────────────────────────────────────────────────────────────
+
+model Fix {
+  id          String   @id @default(uuid())
+  issueId     String   @unique @map("issue_id")
+  fixType     String   @map("fix_type")    // alt_text | aria_label | aria_role | contrast | ...
+  fixValue    String   @map("fix_value")
+  explanation String
+  status      String   @default("PENDING") // PENDING | APPLIED
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  issue Issue @relation(fields: [issueId], references: [id], onDelete: Cascade)
+
+  @@map("fixes")
+}
