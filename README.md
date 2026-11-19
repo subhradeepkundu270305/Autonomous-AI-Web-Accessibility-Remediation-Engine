@@ -1,7 +1,6 @@
 # Autonomous AI Web Accessibility Remediation Engine
 
-> **B.Tech CS Final Year Project (Team of 4)**  
-> Scan any website for WCAG 2.1 AA violations, get AI-generated code fixes, download a `patch.js` and a PDF report — end to end, no manual steps.
+> **Scan any website for WCAG 2.1 AA violations, get AI-generated code fixes, download a `patch.js` and a PDF report — end to end, no manual steps.**
 
 [![Phase](https://img.shields.io/badge/phase-MVP%20Complete-green)](#phases)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue?logo=typescript)](#)
